@@ -1,9 +1,10 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { Select, Typography } from "antd";
+import { Pagination, PaginationProps, Select, Typography } from "antd";
 import { Option } from "antd/lib/mentions";
 import axios from "axios";
 import { API_COINS } from "constants/links";
 import { CHOICE_CURRENCY } from "constants/variable";
+import numeral from "numeral";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.scss";
@@ -13,6 +14,8 @@ export type TableListItem = {
   name: string;
   price: number;
   image: string;
+  id: string;
+  circulating_supply: number;
 };
 
 const Cryptocurrency = () => {
@@ -38,7 +41,9 @@ const Cryptocurrency = () => {
             width={20}
             height={20}
           />
-          <Typography.Link onClick={() => navigate(`/cryptocurrency/${name}`)}>
+          <Typography.Link
+            onClick={() => navigate(`/cryptocurrency/${record.id}`)}
+          >
             {name}
           </Typography.Link>
         </div>
@@ -49,20 +54,43 @@ const Cryptocurrency = () => {
       dataIndex: "current_price",
       render: (price) => (
         <>
-          {symbol} {price}
+          {symbol} {formatNum(price as number)}
+        </>
+      ),
+    },
+    {
+      title: "Circulating Supply",
+      dataIndex: "circulating_supply",
+      render: (csupply) => <>{formatNum(csupply as number)}</>,
+    },
+    {
+      title: "Max Supply",
+      dataIndex: "max_supply",
+      render: (msupply) => (
+        <>{msupply === "-" ? "N/A" : formatNum(msupply as number)}</>
+      ),
+    },
+    {
+      title: "Market Cap",
+      dataIndex: "market_cap",
+      render: (mcap) => (
+        <>
+          {symbol} {formatNum(mcap as number)}
+        </>
+      ),
+    },
+    {
+      title: "Total Volume",
+      dataIndex: "total_volume",
+      render: (volume) => (
+        <>
+          {symbol} {formatNum(volume as number)}
         </>
       ),
     },
   ];
-
-  const fetchCoins = () => {
-    setLoading(true);
-
-    axios.get(API_COINS(currency)).then((res) => {
-      setCoins(res?.data || []);
-      setLoading(false);
-    });
-  };
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   const handleChange = (value: string) => {
     setCurrency(value);
@@ -81,19 +109,35 @@ const Cryptocurrency = () => {
       <p>Top Cryptocurrency</p>
       <Select defaultValue="USD" style={{ width: 120 }} onChange={handleChange}>
         {(CHOICE_CURRENCY || []).map((cur) => (
-          <Option value={cur.value}>{cur.name}</Option>
+          <Select.Option key={cur.value} value={cur.value}>
+            {cur.name}
+          </Select.Option>
         ))}
       </Select>
     </>
   );
 
-  console.log(symbol);
-  console.log(coins);
+  const formatNum = (num: number) =>
+    num > 1 ? numeral(num).format("0,0.00") : num;
+
+  const onChange: PaginationProps["onChange"] = (pageNumber) => {
+    setPage(pageNumber);
+  };
 
   useEffect(() => {
-    fetchCoins();
-  }, [currency, symbol]);
+    const fetchCoins = () => {
+      setLoading(true);
 
+      axios.get(API_COINS(currency, page, perPage)).then((res) => {
+        setCoins(res?.data || []);
+        setLoading(false);
+      });
+    };
+
+    fetchCoins();
+  }, [currency, page, perPage]);
+
+  console.log(coins);
   return (
     <>
       <ProTable<TableListItem>
@@ -105,6 +149,22 @@ const Cryptocurrency = () => {
         options={false}
         search={false}
         dateFormatter={false}
+        pagination={{
+          showSizeChanger: true,
+          // pageSize: perPage,
+          onShowSizeChange: (current: number, size: number) => {
+            setPerPage(size);
+          },
+          // itemRender: (page, type, element) => {
+          //   return (
+          //     <Pagination
+          //       defaultCurrent={1}
+          //       total={10000}
+          //       onChange={onChange}
+          //     />
+          //   );
+          // },
+        }}
       />
     </>
   );
