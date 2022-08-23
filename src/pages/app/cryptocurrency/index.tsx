@@ -151,8 +151,9 @@ const Cryptocurrency = () => {
         dateFormatter={false}
         pagination={{
           showSizeChanger: true,
-          // pageSize: perPage,
+          pageSize: perPage,
           onShowSizeChange: (current: number, size: number) => {
+            console.log(current);
             setPerPage(size);
           },
           // itemRender: (page, type, element) => {
@@ -166,6 +167,8 @@ const Cryptocurrency = () => {
           // },
         }}
       />
+      <button onClick={() => setPage(page - 1)}>prev</button>
+      <button onClick={() => setPage(page + 1)}>next</button>
     </>
   );
 };
