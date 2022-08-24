@@ -138,6 +138,10 @@ const Cryptocurrency = () => {
   }, [currency, page, perPage]);
 
   console.log(coins);
+
+  const style = {
+    // display: "none",
+  };
   return (
     <>
       <ProTable<TableListItem>
@@ -156,6 +160,7 @@ const Cryptocurrency = () => {
             console.log(current);
             setPerPage(size);
           },
+          style: { ...style },
           // itemRender: (page, type, element) => {
           //   return (
           //     <Pagination
