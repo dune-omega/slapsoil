@@ -47,7 +47,9 @@ const Coins = () => {
                 <Title style={{ margin: "0 0 0 10px" }}>{coin.name}</Title>
               </div>
             </Col>
-            <Col span={16}>1</Col>
+            <Col span={16}>
+              <Title level={5}>Price</Title>
+            </Col>
           </Row>
         </>
       )}
