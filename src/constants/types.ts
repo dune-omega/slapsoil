@@ -1,3 +1,9 @@
+export type ICoinPrice = {
+  usd: number;
+  php: number;
+  cny: number;
+};
+
 export interface ICoin {
   categories: string[];
   description: { en: string };
@@ -16,6 +22,9 @@ export interface ICoin {
     announcement_url: string[];
   };
   market_cap_rank: number;
+  market_data: {
+    current_price: ICoinPrice;
+  };
   name: string;
   symbol: string;
 }
@@ -37,14 +46,15 @@ export interface ICryptolist {
 
 export interface ICryptoContext {
   coins: ICryptolist[];
-  symbol: string;
-  setCurrency: React.Dispatch<React.SetStateAction<string>>;
-  setSymbol: React.Dispatch<React.SetStateAction<string>>;
+  currency: string;
   loading: boolean;
   page: number;
   perPage: number;
+  setCurrency: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setPerPage: React.Dispatch<React.SetStateAction<number>>;
+  setSymbol: React.Dispatch<React.SetStateAction<string>>;
+  symbol: string;
 }
 
 export type TableListItem = {

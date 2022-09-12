@@ -1,6 +1,7 @@
 import { RightOutlined } from "@ant-design/icons";
 import { Col, Row, Spin, Typography } from "antd";
 import { API_COIN } from "constants/links";
+import { useCryptoContext } from "context/cryptoContext";
 import { useFetchAPISingle } from "hooks/useFetchAPISingle";
 import { useNavigate, useParams } from "react-router-dom";
 import "./index.scss";
@@ -9,6 +10,7 @@ const { Title } = Typography;
 
 const Coins = () => {
   const { id } = useParams();
+  const { currency } = useCryptoContext();
   const { data: coin, loading } = useFetchAPISingle(API_COIN(id as string));
   const flexStyle = {
     display: "flex",
@@ -16,6 +18,7 @@ const Coins = () => {
     alignItems: "center",
   };
 
+  console.log(coin.market_data?.current_price, currency);
   const navigate = useNavigate();
   return (
     <>
@@ -49,6 +52,9 @@ const Coins = () => {
             </Col>
             <Col span={16}>
               <Title level={5}>Price</Title>
+              <Title level={1}>
+                {coin.market_data.current_price["currency"]}
+              </Title>
             </Col>
           </Row>
         </>
