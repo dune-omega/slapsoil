@@ -11,14 +11,20 @@ const { Title } = Typography;
 const Coins = () => {
   const { id } = useParams();
   const { currency } = useCryptoContext();
-  const { data: coin, loading } = useFetchAPISingle(API_COIN(id as string));
+  const { data, loading } = useFetchAPISingle(API_COIN(id as string));
   const flexStyle = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
   };
 
-  console.log(coin.market_data?.current_price, currency);
+  console.log(data.market_data?.current_price, currency);
+
+  const coin1 = {
+    name: data.name,
+    price: data.market_data?.current_price[currency.toLowerCase()],
+  };
+
   const navigate = useNavigate();
   return (
     <>
@@ -37,24 +43,22 @@ const Coins = () => {
                   Cryptocurrency
                 </Typography.Link>
                 <RightOutlined style={{ fontSize: 12 }} />
-                <Typography.Text>{coin.name}</Typography.Text>
+                <Typography.Text>{data.name}</Typography.Text>
               </div>
               <div style={{ marginBlockStart: 10, ...flexStyle }}>
                 <img
                   className="coin__image"
-                  src={coin.image?.small}
+                  src={data.image?.small}
                   alt="crypto_logo"
                   width={35}
                   height={35}
                 />
-                <Title style={{ margin: "0 0 0 10px" }}>{coin.name}</Title>
+                <Title style={{ margin: "0 0 0 10px" }}>{data.name}</Title>
               </div>
             </Col>
             <Col span={16}>
               <Title level={5}>Price</Title>
-              <Title level={1}>
-                {coin.market_data.current_price["currency"]}
-              </Title>
+              {/* <Title level={1}>{data.market_data.current_price[currency.toLowerCase()]}</Title> */}
             </Col>
           </Row>
         </>

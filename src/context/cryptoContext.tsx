@@ -48,6 +48,7 @@ export const ICryptoProvider = ({ children }: Context) => {
         setPerPage,
         setSymbol,
         symbol,
+        currency,
       }}
     >
       {children}
