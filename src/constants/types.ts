@@ -1,7 +1,7 @@
 export type ICoinPrice = {
-  usd: number;
-  php: number;
-  cny: number;
+  usd: "usd";
+  php: "php";
+  cny: "cny";
 };
 
 export interface ICoin {
@@ -23,7 +23,7 @@ export interface ICoin {
   };
   market_cap_rank: number;
   market_data: {
-    current_price: ICoinPrice;
+    current_price: string;
   };
   name: string;
   symbol: string;
