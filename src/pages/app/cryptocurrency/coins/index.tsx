@@ -1,5 +1,5 @@
 import { RightOutlined } from "@ant-design/icons";
-import { Col, Row, Spin, Typography } from "antd";
+import { Col, Row, Space, Spin, Typography } from "antd";
 import { API_COIN } from "constants/links";
 import { useCryptoContext } from "context/cryptoContext";
 import { useFetchAPISingle } from "hooks/useFetchAPISingle";
@@ -10,6 +10,7 @@ import "./index.scss";
 export interface ICoin {
   name: string;
   price: number | string;
+  price_change: string;
 }
 
 const { Title } = Typography;
@@ -24,17 +25,25 @@ const Coins = () => {
     alignItems: "center",
   };
 
-  console.log(data.market_data?.current_price, currency);
-
   const coin: ICoin = {
     name: data.name,
-    price: data?.market_data?.current_price[currency.toLowerCase()],
+    price: numeral(
+      data?.market_data?.current_price[currency.toLowerCase()]
+    ).format("0,00.00"),
+    price_change: data?.market_data?.price_change_percentage_24h?.toFixed(2),
   };
-
-  console.log(coin);
 
   const navigate = useNavigate();
 
+  const colorChangeStyle = {
+    backgroundColor: +coin.price_change > 0.01 ? "#16c784" : "#ea3943",
+    color: "white",
+    padding: "0.3rem 1rem",
+    borderRadius: "5px",
+  };
+
+  console.log(data);
+  console.log(coin);
   return (
     <>
       {loading ? (
@@ -67,12 +76,13 @@ const Coins = () => {
             </Col>
             <Col span={16}>
               <Title level={5}>Price</Title>
-              <Title level={1} style={{ margin: 0 }}>
-                {symbol}
-                {numeral(
-                  data?.market_data?.current_price[currency.toLowerCase()]
-                ).format("0,0.00")}
-              </Title>
+              <Space direction="horizontal" align="center">
+                <Title level={1} style={{ margin: 0 }}>
+                  {symbol}
+                  {coin.price}
+                </Title>
+                <span style={{ ...colorChangeStyle }}>{coin.price_change}</span>
+              </Space>
             </Col>
           </Row>
         </>
