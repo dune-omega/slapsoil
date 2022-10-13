@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ICoin } from "constants/types";
 
 export const useFetchAPISingle = (url: string) => {
-  const [data, setData] = useState({} as ICoin);
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 

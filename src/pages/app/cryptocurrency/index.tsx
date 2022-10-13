@@ -1,33 +1,20 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { Pagination, PaginationProps, Select, Typography } from "antd";
-import { Option } from "antd/lib/mentions";
-import axios from "axios";
-import { API_COINS } from "constants/links";
+import { Select, Typography } from "antd";
+import { formatNum, percentageChange } from "constants/function";
+import { TableListItem } from "constants/types";
 import { CHOICE_CURRENCY } from "constants/variable";
-import numeral from "numeral";
-import { useEffect, useState } from "react";
+import { useCryptoContext } from "context/cryptoContext";
 import { useNavigate } from "react-router-dom";
 import "./index.scss";
 
-export type TableListItem = {
-  market_cap_rank: string;
-  name: string;
-  price: number;
-  image: string;
-  id: string;
-  circulating_supply: number;
-};
-
 const Cryptocurrency = () => {
   const navigate = useNavigate();
-  const [coins, setCoins] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [symbol, setSymbol] = useState("$");
-  const [currency, setCurrency] = useState("usd");
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: "#",
       dataIndex: "market_cap_rank",
+      sorter: (a, b) => +a.market_cap_rank - +b.market_cap_rank,
     },
     {
       title: "Name",
@@ -57,6 +44,11 @@ const Cryptocurrency = () => {
           {symbol} {formatNum(price as number)}
         </>
       ),
+    },
+    {
+      title: "%",
+      dataIndex: "price_change_percentage_24h",
+      render: (priceChange) => <>{percentageChange(priceChange as number)}</>,
     },
     {
       title: "Circulating Supply",
@@ -89,20 +81,18 @@ const Cryptocurrency = () => {
       ),
     },
   ];
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
 
-  const handleChange = (value: string) => {
-    setCurrency(value);
-
-    value === "usd"
-      ? setSymbol("$")
-      : value === "php"
-      ? setSymbol("₱")
-      : value === "cny"
-      ? setSymbol("¥")
-      : setSymbol("");
-  };
+  const {
+    coins,
+    loading,
+    page,
+    perPage,
+    setCurrency,
+    setPage,
+    setPerPage,
+    setSymbol,
+    symbol,
+  } = useCryptoContext();
 
   const renderHeader = () => (
     <>
@@ -117,27 +107,17 @@ const Cryptocurrency = () => {
     </>
   );
 
-  const formatNum = (num: number) =>
-    num > 1 ? numeral(num).format("0,0.00") : num;
+  const handleChange = (value: string) => {
+    setCurrency(value);
 
-  const onChange: PaginationProps["onChange"] = (pageNumber) => {
-    setPage(pageNumber);
+    value === "usd"
+      ? setSymbol("$")
+      : value === "php"
+      ? setSymbol("₱")
+      : value === "cny"
+      ? setSymbol("¥")
+      : setSymbol("");
   };
-
-  useEffect(() => {
-    const fetchCoins = () => {
-      setLoading(true);
-
-      axios.get(API_COINS(currency, page, perPage)).then((res) => {
-        setCoins(res?.data || []);
-        setLoading(false);
-      });
-    };
-
-    fetchCoins();
-  }, [currency, page, perPage]);
-
-  console.log(coins);
 
   const style = {
     // display: "none",
