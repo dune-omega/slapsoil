@@ -4,7 +4,7 @@ export type ICoinPrice = {
   cny: "cny";
 };
 
-export interface ICoin {
+export interface ICoinData {
   categories: string[];
   description: { en: string };
   hashing_algorithm: string;

@@ -22,7 +22,7 @@
 
 "@ant-design/charts@^1.4.2":
   version "1.4.2"
-  resolved "https://registry.npmjs.org/@ant-design/charts/-/charts-1.4.2.tgz"
+  resolved "https://registry.yarnpkg.com/@ant-design/charts/-/charts-1.4.2.tgz#409d9d2205390f46c9942dd2ba3152629d214700"
   integrity sha512-BcVx6AAnwxSdzAVUZReSuvUVtnT5AkJivq3wmcYj17scll26HHficg35yimGskAj3Gu1upYjBQBz6Tk7GEMJsQ==
   dependencies:
     "@ant-design/flowchart" "^1.0.2"

@@ -5,10 +5,12 @@ import {
 } from "@ant-design/icons";
 import { Col, Row, Space, Spin, Typography } from "antd";
 import { API_COIN } from "constants/links";
+import { ICoinData } from "constants/types";
 import { useCryptoContext } from "context/cryptoContext";
 import { useFetchAPISingle } from "hooks/useFetchAPISingle";
 import numeral from "numeral";
 import { useNavigate, useParams } from "react-router-dom";
+import PriceChart from "./chart";
 import "./index.scss";
 
 export interface ICoin {
@@ -17,12 +19,20 @@ export interface ICoin {
   price_change: string;
 }
 
+export type IResData = {
+  data: ICoinData;
+  loading: boolean;
+};
+
 const { Title } = Typography;
 
 const Coins = () => {
   const { id } = useParams();
   const { currency, symbol } = useCryptoContext();
-  const { data, loading } = useFetchAPISingle(API_COIN(id as string));
+  const { data, loading } = useFetchAPISingle(
+    API_COIN(id as string)
+  ) as unknown as IResData;
+
   const flexStyle = {
     display: "flex",
     justifyContent: "flex-start",
@@ -31,7 +41,7 @@ const Coins = () => {
   const coin: ICoin = {
     name: data.name,
     price: numeral(
-      data?.market_data?.current_price[currency.toLowerCase()]
+      data.market_data?.current_price[currency.toLowerCase()]
     ).format("0,00.00"),
     price_change: data?.market_data?.price_change_percentage_24h?.toFixed(2),
   };
@@ -52,7 +62,6 @@ const Coins = () => {
   const renderPriceArrow = () =>
     arrow_change > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />;
 
-  console.log();
   return (
     <>
       {loading ? (
@@ -97,6 +106,7 @@ const Coins = () => {
               </Space>
             </Col>
           </Row>
+          <PriceChart />
         </>
       )}
     </>
