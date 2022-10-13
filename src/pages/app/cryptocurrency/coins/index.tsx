@@ -1,4 +1,8 @@
-import { RightOutlined } from "@ant-design/icons";
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import { Col, Row, Space, Spin, Typography } from "antd";
 import { API_COIN } from "constants/links";
 import { useCryptoContext } from "context/cryptoContext";
@@ -24,7 +28,6 @@ const Coins = () => {
     justifyContent: "flex-start",
     alignItems: "center",
   };
-
   const coin: ICoin = {
     name: data.name,
     price: numeral(
@@ -33,17 +36,23 @@ const Coins = () => {
     price_change: data?.market_data?.price_change_percentage_24h?.toFixed(2),
   };
 
+  const arrow_change = +coin.price_change;
+
   const navigate = useNavigate();
 
   const colorChangeStyle = {
-    backgroundColor: +coin.price_change > 0.01 ? "#16c784" : "#ea3943",
+    backgroundColor: arrow_change > 0.0 ? "#16c784" : "#ea3943",
     color: "white",
-    padding: "0.3rem 1rem",
+    padding: "0.3rem 0.5rem",
     borderRadius: "5px",
+    fontSize: "0.9rem",
+    fontWeight: "700",
   };
 
-  console.log(data);
-  console.log(coin);
+  const renderPriceArrow = () =>
+    arrow_change > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />;
+
+  console.log();
   return (
     <>
       {loading ? (
@@ -81,7 +90,10 @@ const Coins = () => {
                   {symbol}
                   {coin.price}
                 </Title>
-                <span style={{ ...colorChangeStyle }}>{coin.price_change}</span>
+                <Space size={2} style={{ ...colorChangeStyle }}>
+                  {renderPriceArrow()}
+                  <span>{coin.price_change?.replace("-", "")}</span>
+                </Space>
               </Space>
             </Col>
           </Row>
