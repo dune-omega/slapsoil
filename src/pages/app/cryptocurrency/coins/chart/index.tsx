@@ -1,6 +1,5 @@
 import { API_COIN_CHART } from "constants/links";
 import { useFetchAPISingle } from "hooks/useFetchAPISingle";
-import React from "react";
 import { useParams } from "react-router-dom";
 
 type IResPriceChart = {

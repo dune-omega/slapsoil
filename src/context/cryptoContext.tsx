@@ -1,6 +1,7 @@
 import axios from "axios";
-import { API_COINS } from "constants/links";
+import { API_COINS, API_COIN_LIST } from "constants/links";
 import { ICryptoContext, ICryptolist } from "constants/types";
+import { useFetchAPIMultiple } from "hooks/useFetchAPIMulti";
 import {
   createContext,
   ReactNode,

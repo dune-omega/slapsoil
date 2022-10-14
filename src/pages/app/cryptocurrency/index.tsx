@@ -1,9 +1,16 @@
-import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { Select, Typography } from "antd";
+import {
+  ProColumns,
+  ProForm,
+  ProFormText,
+  ProTable,
+} from "@ant-design/pro-components";
+import { Select, Space, Typography } from "antd";
 import { formatNum, percentageChange } from "constants/function";
+import { API_COINS, API_COIN_LIST } from "constants/links";
 import { TableListItem } from "constants/types";
 import { CHOICE_CURRENCY } from "constants/variable";
 import { useCryptoContext } from "context/cryptoContext";
+import { useFetchAPIMultiple } from "hooks/useFetchAPIMulti";
 import { useNavigate } from "react-router-dom";
 import "./index.scss";
 
@@ -14,7 +21,7 @@ const Cryptocurrency = () => {
     {
       title: "#",
       dataIndex: "market_cap_rank",
-      sorter: (a, b) => +a.market_cap_rank - +b.market_cap_rank,
+      render: (_, record) => record.market_cap_rank,
     },
     {
       title: "Name",
@@ -48,7 +55,8 @@ const Cryptocurrency = () => {
     {
       title: "%",
       dataIndex: "price_change_percentage_24h",
-      render: (priceChange) => <>{percentageChange(priceChange as number)}</>,
+      render: (_, record) =>
+        percentageChange(record.price_change_percentage_24h as number),
     },
     {
       title: "Circulating Supply",
@@ -84,6 +92,7 @@ const Cryptocurrency = () => {
 
   const {
     coins,
+    currency,
     loading,
     page,
     perPage,
@@ -94,16 +103,33 @@ const Cryptocurrency = () => {
     symbol,
   } = useCryptoContext();
 
+  const { data } = useFetchAPIMultiple([
+    API_COINS(currency, page, perPage),
+    API_COIN_LIST(),
+  ]);
+
   const renderHeader = () => (
     <>
-      <p>Top Cryptocurrency</p>
-      <Select defaultValue="USD" style={{ width: 120 }} onChange={handleChange}>
-        {(CHOICE_CURRENCY || []).map((cur) => (
-          <Select.Option key={cur.value} value={cur.value}>
-            {cur.name}
-          </Select.Option>
-        ))}
-      </Select>
+      <Space align="center">
+        <ProForm>
+          <ProFormText
+            name="Cyptocurrency"
+            label="Search for a coin:"
+            placeholder="eg: Bitcoin"
+          />
+        </ProForm>
+        <Select
+          defaultValue="USD"
+          style={{ width: 120 }}
+          onChange={handleChange}
+        >
+          {(CHOICE_CURRENCY || []).map((cur) => (
+            <Select.Option key={cur.value} value={cur.value}>
+              {cur.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Space>
     </>
   );
 
@@ -119,9 +145,6 @@ const Cryptocurrency = () => {
       : setSymbol("");
   };
 
-  const style = {
-    // display: "none",
-  };
   return (
     <>
       <ProTable<TableListItem>
@@ -133,27 +156,20 @@ const Cryptocurrency = () => {
         options={false}
         search={false}
         dateFormatter={false}
+        scroll={{
+          x: 992,
+        }}
         pagination={{
           showSizeChanger: true,
+          defaultPageSize: 10,
           pageSize: perPage,
-          onShowSizeChange: (current: number, size: number) => {
-            console.log(current);
-            setPerPage(size);
+          total: data[1]?.length,
+          onChange: (page, perPage) => {
+            setPage(page);
+            setPerPage(perPage);
           },
-          style: { ...style },
-          // itemRender: (page, type, element) => {
-          //   return (
-          //     <Pagination
-          //       defaultCurrent={1}
-          //       total={10000}
-          //       onChange={onChange}
-          //     />
-          //   );
-          // },
         }}
       />
-      <button onClick={() => setPage(page - 1)}>prev</button>
-      <button onClick={() => setPage(page + 1)}>next</button>
     </>
   );
 };

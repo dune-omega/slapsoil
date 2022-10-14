@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 
 //create a multiple endpoint hook
 export const useFetchAPIMultiple = (url: string[]) => {
-  const [data, setData] = useState([] as AxiosResponse<any>[]);
+  const [data, setData] = useState([] as unknown as any[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,7 +14,7 @@ export const useFetchAPIMultiple = (url: string[]) => {
         await axios
           .all(url.map((endpoint: string) => axios.get(endpoint)))
           .then((res) => {
-            const data = res.map((r: AxiosResponse) => r.data);
+            const data = res.map((r) => r.data);
             setData(data);
           });
       } catch (err) {

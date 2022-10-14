@@ -12,7 +12,7 @@ export const percentageChange = (num: number) => (
     ) : (
       ""
     )}{" "}
-    {num.toFixed(2).toString().replace("-", "")}
+    {num?.toFixed(2).toString().replace("-", "")}
   </span>
 );
 

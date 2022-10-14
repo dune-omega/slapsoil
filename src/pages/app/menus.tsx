@@ -7,7 +7,6 @@ import {
 import Cryptocurrency from "./cryptocurrency";
 import Message from "./message";
 import Repositories from "./repositories";
-import TestPage from "./test";
 
 export const MenuArr = [
   {
@@ -33,12 +32,6 @@ export const MenuArr = [
     name: "Cryptocurrency",
     path: "/cryptocurrency",
     element: <Cryptocurrency />,
-    icon: <DatabaseOutlined />,
-  },
-  {
-    name: "TestPage",
-    path: "/testPage",
-    element: <TestPage />,
     icon: <DatabaseOutlined />,
   },
 ];

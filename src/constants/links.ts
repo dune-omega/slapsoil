@@ -10,3 +10,6 @@ export const API_COIN_CHART = (
   days: number | string
 ) => `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${currency}&days=${days}
     `;
+
+export const API_COIN_LIST = () =>
+  "https://api.coingecko.com/api/v3/coins/list?include_platform=false";
