@@ -1,8 +1,25 @@
-import React from "react";
-import s from "./index.scss";
+import { ProLayout } from "@ant-design/pro-components";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { API_COIN_LIST } from "./config/http";
 
-const App = () => {
-  return <h1 className={s.title_tag}>Hello World</h1>;
+const Root = () => {
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    await axios.get(API_COIN_LIST()).then((res) => setData(res.data));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(data);
+  return (
+    <>
+      <ProLayout />
+    </>
+  );
 };
 
-export default App;
+export default Root;
