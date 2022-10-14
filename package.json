@@ -13,10 +13,13 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/pro-components": "^2.3.18",
+    "antd": "^4.23.5",
     "autoprefixer": "10.4.5",
     "axios": "^1.1.2",
     "babel-preset-es2015": "^6.24.1",
+    "less-loader": "^11.1.0",
     "lodash": "^4.17.21",
+    "postcss-loader": "^7.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
